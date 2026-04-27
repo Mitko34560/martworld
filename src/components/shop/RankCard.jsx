@@ -1,0 +1,75 @@
+import React from 'react';
+import { motion } from 'framer-motion';
+import { Button } from '@/components/ui/button';
+import { ShoppingCart, Star, Zap, Crown, Flame, Shield } from 'lucide-react';
+
+const iconMap = {
+  spider: Shield,
+  lightning: Zap,
+  crown: Crown,
+  flame: Flame,
+  star: Star,
+};
+
+const gradients = {
+  brown: 'from-violet-900/80 to-purple-950/90 border-violet-700/40',
+  blue: 'from-indigo-700/80 to-violet-900/90 border-indigo-500/40',
+  yellow: 'from-purple-600/80 to-purple-900/90 border-purple-400/40',
+  red: 'from-fuchsia-700/80 to-purple-900/90 border-fuchsia-500/40',
+};
+
+export default function RankCard({ item, onBuy, index }) {
+  const color = item.color || 'brown';
+  const Icon = iconMap[item.icon] || Shield;
+  const gradient = gradients[color] || gradients.brown;
+  const features = item.features || [];
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 40 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ delay: index * 0.15 }}
+      whileHover={{ y: -8, scale: 1.02 }}
+      className={`relative bg-gradient-to-br ${gradient} border rounded-xl overflow-hidden flex flex-col backdrop-blur-sm shadow-lg shadow-violet-950/50 hover:shadow-violet-700/30 hover:shadow-xl transition-shadow duration-300`}
+    >
+      {item.is_popular && (
+        <div className="absolute top-3 right-3 bg-red-500 text-white text-xs px-2 py-1 rounded-full font-bold">
+          ПОПУЛЯРНЫЙ
+        </div>
+      )}
+      
+      <div className="p-6 flex-1">
+        <div className="flex items-start justify-between mb-4">
+          <div>
+            <h3 className="font-heading font-bold text-2xl text-white uppercase">{item.name}</h3>
+            <p className="font-heading font-bold text-xl text-white/80">{item.price}₽</p>
+          </div>
+          <Icon className="w-10 h-10 text-white/60" />
+        </div>
+        
+        <ul className="space-y-1.5 text-sm text-white/80 mb-6">
+          {features.map((f, i) => (
+            <li key={i} className="flex items-start gap-2">
+              <span className="text-white/50 mt-0.5">•</span>
+              <span>{f}</span>
+            </li>
+          ))}
+        </ul>
+      </div>
+
+      <div className="p-4 pt-0">
+        <motion.button
+          onClick={() => onBuy(item)}
+          whileHover={{ scale: 1.04, backgroundColor: 'rgba(255,255,255,0.30)' }}
+          whileTap={{ scale: 0.97 }}
+          transition={{ duration: 0.18 }}
+          className="w-full flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg bg-white/15 text-white border border-white/30 text-sm font-semibold cursor-pointer backdrop-blur-sm shadow-md hover:shadow-white/10"
+          style={{ boxShadow: '0 0 0 0 rgba(255,255,255,0)' }}
+        >
+          <ShoppingCart className="w-4 h-4" />
+          КУПИТЬ ЗА {item.price}₽
+        </motion.button>
+      </div>
+    </motion.div>
+  );
+}
